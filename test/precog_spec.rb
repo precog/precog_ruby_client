@@ -158,9 +158,9 @@ describe Precog do
     query = @client.query_async('', "max((/#{path}).testInt)")
     
     result = nil
-    result = query.raw until result
+    result = query.parsed until result
     
-    errors, warnings, result = query.parsed
+    errors, warnings, result = result
     
     errors.should == []
     warnings.should == []
