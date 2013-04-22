@@ -1,5 +1,3 @@
-require 'rubygems'
-
 require 'addressable/uri'
 
 require 'net/http'
