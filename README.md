@@ -105,11 +105,11 @@ Let's use async queries to find our best customer.
 
 Now that we have a handle on the results, we can do 1 of 2 things. We can get
 the results directly and store them in memory, using `parsed`. In this
-case, if the results aren't ready yet, then `parsed` returns `null`. So,
+case, if the results aren't ready yet, then `parsed` returns `nil`. So,
 that indicates we need to wait a bit and try again.
 
     results = nil
-    results = query.parsed while results.nil?
+    results = query.parsed until results
     
     errors, warnings, data = results
 
