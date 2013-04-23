@@ -1,7 +1,7 @@
 # :mode=ruby:
 Gem::Specification.new do |s|
   s.name        = 'precog'
-  s.version     = '1.0.0.pre2'
+  s.version     = '1.0.0.pre4'
   s.date        = '2013-04-22'
   s.summary     = "Precog Client"
   s.description = "Client library for the Precog platform"
