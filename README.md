@@ -72,12 +72,12 @@ error message:
     unless errors.empty?
 	  puts 'Query failed!'
 	  errors.each do |error|
-	    puts "error:#{error.line_num}:#{error.column_num}: #{error.message}"
+	    puts "error:#{error.position.line_num}:#{error.position.column_num}: #{error.message}"
 	  end
     }
 
     warnings.each do |warning|
-      puts "warning:#{warning.line_num}:#{warning.column_num}: #{warning.message}"
+      puts "warning:#{warning.position.line_num}:#{warning.position.column_num}: #{warning.message}"
     end
 
 The `Client` also let's submit queries for execution, without actually
