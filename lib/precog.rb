@@ -25,6 +25,14 @@ module Precog
   # Struct used to return account information from the Client class.
   AccountInfo = Struct.new :api_key, :account_id, :email
   
+  # Represents an error or warning returned from the Precog API.  The position
+  # information is optional, and is reprensented by an instance of +Position+
+  # when present.
+  Info = Struct.new :message, :position
+  
+  # Represents a location within a Quirrel source fragment.
+  Position = Struct.new :line_num, :column_num, :line_text
+  
   # A simple REST client for storing data in Precog and querying it with Quirrel.
   # 
   # This provides methods to upload files to
@@ -253,13 +261,19 @@ module Precog
     # interrupted, there will be no way to retrieve the results of the query.
     #
     # Returns a triple of errors, warnings and an +Array+ of data representing
-    # the query results.
+    # the query results.  The errors and warnings are represented as +Array+(s)
+    # of +Info+ objects.
     def query(path, query)
       path = relativize_path path
       params = { :apiKey => api_key, :q => query, :format => 'detailed' }
       resp = Precog.get(self, "/analytics/v#{VERSION}/fs/#{path}", { 'Content-Type' => 'application/json' }, params)
       output = JSON.parse resp.body
-      [output["errors"], output["warnings"], output["data"]]
+      
+      [
+        output["errors"].select { |i| !i.nil? }.map { |i| Precog.parse_info i },
+        output["warnings"].select { |i| !i.nil? }.map { |i| Precog.parse_info i },
+        output["data"]
+      ]
     end
     
     # Runs an asynchronous query against Precog. An async query is a query
@@ -331,12 +345,23 @@ module Precog
       
       if data
         output = JSON.parse data
-        [output["errors"], output["warnings"], output["data"]]
+        
+        [
+          output["errors"].select { |i| !i.nil? }.map { |i| Precog.parse_info i },
+          output["warnings"].select { |i| !i.nil? }.map { |i| Precog.parse_info i },
+          output["data"]
+        ]
       end
     end
   end
   
   class << self
+    def parse_info(info)   # :nodoc:
+      pos_hash = info['position']
+      pos = Position.new pos_hash['line'].to_i, pos_hash['column'].to_i, pos_hash['text'] unless pos_hash.nil?
+      Info.new info['message'], pos
+    end
+    
     def post(client, path, body, header, params = {})  # :nodoc:
       connect client do |http|
         uri = Addressable::URI.new

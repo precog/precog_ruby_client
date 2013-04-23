@@ -65,19 +65,19 @@ decoded using `JSON.parse`.
 
 Although we print the results out, we don't actually know for sure that the
 query succeeded. So, we probably want to check. Quirrel errors (eg. syntax
-errors) are reported as `Hash`s. We can extract from these hashes information
+errors) are reported as `Info`s. We can extract from these objects information
 about the line origin of the error/warning (in the original query) and the exact
 error message:
 
     unless errors.empty?
 	  puts 'Query failed!'
 	  errors.each do |error|
-	    puts "Error: #{error['message']}"
+	    puts "error:#{error.line_num}:#{error.column_num}: #{error.message}"
 	  end
     }
 
     warnings.each do |warning|
-      puts "Warning: #{warning['message']}"
+      puts "warning:#{warning.line_num}:#{warning.column_num}: #{warning.message}"
     end
 
 The `Client` also let's submit queries for execution, without actually

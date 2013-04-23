@@ -172,7 +172,15 @@ describe Precog do
     errors, warnings, results = @client.query('', query)
     
     errors.should == []
-    warnings.size.should > 0
+    
+    warnings.size.should == 1
+    warnings.first.should == Precog::Info.new(
+      "binding 'data' defined but not referenced in scope",
+      Precog::Position.new(
+        1,
+        1,
+        "data := \"unused\" 1234"))
+    
     results.should == [1234]
   end
   
@@ -180,7 +188,14 @@ describe Precog do
     query = '1,2#@'
     errors, warnings, results = @client.query('', query)
     
-    errors.size.should > 0
+    errors.size.should == 1
+    errors.first.should == Precog::Info.new(
+      "error:1: expected path or expression\n  1,2\#@\n    ^",         # PLATFORM-1213
+      Precog::Position.new(
+        1,
+        2,
+        "1,2\#@"))
+    
     warnings.should == []
     results.should == []
   end
