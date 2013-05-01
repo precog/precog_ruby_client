@@ -1,2 +1,6 @@
 *.gem
+*~
+*.sw[a-z]
 /doc/
+# Do not commit Gemfile.lock for gem development
+Gemfile.lock
