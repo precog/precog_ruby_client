@@ -15,5 +15,6 @@ Gem::Specification.new do |s|
   s.rdoc_options = ['--main', 'lib/precog.rb']
   
   s.add_runtime_dependency 'addressable', ['~> 2.3']
+  s.add_runtime_dependency 'json', ['~> 1.7']
   s.add_development_dependency 'rspec', ['~> 2.13']
 end
