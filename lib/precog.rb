@@ -343,7 +343,7 @@ module Precog
       resp = Precog.get(client, "/analytics/v#{VERSION}/queries/#{qid}", { 'Content-Type' => 'application/json' }, params)
       data = resp.body
       
-      if data
+      if data && data.length >= 2
         output = JSON.parse data
         
         [
