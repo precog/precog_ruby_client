@@ -11,7 +11,11 @@ module Precog
   # used when one isn't specified. If you signed up for a beta account, this
   # is the services you'll want to use.
   DEFAULT_HOST = 'beta.precog.com'
-  
+
+  # This is the path used by default to validate the certificate returned
+  # on https connections.
+  ROOT_CA = '/etc/ssl/certs'
+
   # Precog API version being used.
   VERSION = 1
   
@@ -395,6 +399,13 @@ module Precog
     def connect(client)  # :nodoc:
       http = Net::HTTP.new(client.host, client.port)
       http.use_ssl = client.secure?
+
+      if (File.directory?(ROOT_CA) && http.use_ssl?)
+        http.ca_path = ROOT_CA
+        http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+        http.verify_depth = 5
+      end
+
       http.start
       
       result = nil
