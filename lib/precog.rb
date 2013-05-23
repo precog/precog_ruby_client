@@ -97,8 +97,8 @@ module Precog
         :password => password,
         :profile => profile
       }
-      
-      results = JSON.parse Precog.post(stub_client, "/accounts/v#{VERSION}/accounts/", body.to_json, {}).body
+
+      results = JSON.parse Precog.post(stub_client, "/accounts/v#{VERSION}/accounts/", body.to_json, { 'Content-Type' => 'application/json' }, {}).body
       account_id = results["accountId"]
       account_details(email, password, account_id, options)
     end
